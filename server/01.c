@@ -15,7 +15,7 @@ void create_fifo(const char *fifo_name)
 {
     if (access(fifo_name, F_OK) == -1)
     {
-        if (mkfifo("fifo_name", 0666) == -1)
+        if (mkfifo(fifo_name, 0666) == -1)
         {
             perror("mkfifo failed");
             exit(EXIT_FAILURE);
