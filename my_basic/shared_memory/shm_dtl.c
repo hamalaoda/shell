@@ -31,6 +31,12 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
+    /*删除共享内存区的数据：删除之前需要将共享内存解映射*/
+    
+    if (-1 == shmctl(shmid, IPC_RMID, NULL)) {
+        perror("shmctl");
+        return -1;
+    }
     
     return 0;
 }
