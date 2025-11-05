@@ -25,25 +25,26 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    msgid = msgget(keyIPC_CREAT | 0777);
+    msgid = msgget(key, IPC_CREAT | 0777);
     if (msgid == -1)
     {
         perror("msgget failed");
         return -1;
     }
 
-    // 写入消息(类型为 "1")
-    msg.mtype = 1;
-    strcpy(msg.mtext, "hello world");
-
-    /*发送消息(阻塞模式)*/
-    if (msgsnd(msgid, &msg, sizeof(msg.mtext), 0) == -1)
+    while (1)
     {
-        perror("msgsnd failed");
-        return -1;
+        printf("输入数据类型:");
+        scanf("%ld", &msg.mtype);
+        getchar();
+        printf("输入发送的消息:");
+        fgets(msg.mtext, sizeof(msg.mtext), stdin);
+        if (msgsnd(msgid, &msg, sizeof(msg.mtext), 0) == -1)
+        {
+            perror("msgsnd failed");
+            return -1;
+        }
     }
-
-    printf("message send : %s\n", msg.mtext);
 
     return 0;
 }
