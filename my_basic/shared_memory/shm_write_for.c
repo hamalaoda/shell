@@ -6,12 +6,14 @@
 #include <string.h>
 
 /*实现功能，子进程循环向共享内存写入数据，父进程循环读取数据*/
+
 int main(int argc, char const *argv[])
 {
     /* 1、创建共享内存*/
     key_t key;
     int shmid;
     char *shmaddr;
+    pid_t pid; // 标识进程id
 
     /* 获取 system V IPC对象 键值 */
     key = ftok(".", 65);
@@ -37,8 +39,44 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    /*完成信号量的初始化：并将信号量的初始值设为1*/
-
     /*将顺序字符串数据写入到共享内存中*/
+    strcpy(shmaddr, "0123456789");
+
+    /*创建子进程*/
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork failed");
+        return -1;
+    }
+
+    /*进入子进程*/
+    else if (pid == 0)
+    {
+        /*循环写数据到共享内存  实现倒叙*/
+        while (1)
+        {
+            int i;
+            char temp;
+            char *p = shmaddr;
+            printf("倒叙前: %s\n", shmaddr);
+            for (int i = 0; i < 5; i++)
+            {
+                temp = p[i];
+                p[i] = p[9 - i];
+                p[9 - i] = temp;
+            }
+            sleep(1);
+        }
+    }
+
+    printf("main process\n");
+    /*进入父进程：循环读取共享内存中的数据并通过标准输出*/
+    while (1)
+    {
+        printf("倒叙后的数据：shmaddr :%s\n", shmaddr);
+        sleep(1);
+    }
+
     return 0;
 }
