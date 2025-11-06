@@ -27,5 +27,5 @@ union semun
  *   失败： 返回-1
  */
 
-extern int ShmInit(const *pathname, int proj_id, size_t size, void **shmaddr);
+extern int ShmInit(const char *pathname, int proj_id, size_t size, void **shmaddr);
 extern int ShmDestroy(const void **shmaddr, int shmid);

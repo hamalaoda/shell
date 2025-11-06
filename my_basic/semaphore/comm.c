@@ -10,7 +10,7 @@
  *   成功： 返回共享内存的ID
  *   失败： 返回-1
  */
-int ShmInit(const *pathname, int proj_id, size_t size, void **shmaddr)
+int ShmInit(const char *pathname, int proj_id, size_t size, void **shmaddr)
 {
     key_t key;
     int shmid;

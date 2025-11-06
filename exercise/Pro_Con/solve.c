@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
         return min + (random() % (max - min + 1));
     }
     /* 1、创建共享内存并映射共享内存空间 */
-    shmid = ShmInit(".", 65, 1024, &shmaddr);
+    shmid = ShmInit(".", 65, 1024, (void **)&shmaddr);
     if (shmid == -1)
     {
         perror("ShmInit failed");
