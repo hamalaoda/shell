@@ -64,3 +64,48 @@ int ShmDestroy(const void **shmaddr, int shmid)
 
     return 0;
 }
+
+/*信号量初始化函数
+ * pathname: 工程运行工作目录名称
+ * pro_id:   工程编号
+ * nsems：   信号量集合中的信号量数量（必须初始化，不然为随机值）
+ * value：   传递单个信号量的初始值
+ */
+int SemInit(const char *pathname, int proj_id, int nsems, int value)
+{
+    key_t key;
+    int semid;
+    int i; // 要操作的单个信号量在集合的索引 （从0开始--第一个）
+    union semun mysemun;
+
+    /* 获取system  V IPC 对象所需的键值 */
+    key = ftok(pathname, proj_id);
+    if (key == -1)
+    {
+        perror("SemInit->ftok");
+        return -1;
+    }
+
+    /*获取信号量集合的id，不存在的创建，反之直接获取*/
+    semid = semget(key, nsems, IPC_CREAT | 0777);
+    if (semid == -1)
+    {
+        perror("SemInit->semget");
+        return -1;
+    }
+
+    /*初始化信号量的值，否则为随机值*/
+    // 参数：
+    /* semid：整个信号量的集合*/
+    /* i：信号量集合中单个信号量的索引。。。如果是信号量集合则为0*/
+    /* SETVAL: 对信号量的操作*/
+    for (i = 0; i < nsems; i++)
+    {
+        mysemun.val = value;
+        if (semctl(semid, i, SETVAL, mysemun) == -1)
+        {
+            perror("semctl->IPC_RMID");
+            return -1;
+        }
+    }
+}

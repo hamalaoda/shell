@@ -14,6 +14,7 @@ int main(int argc, char const *argv[])
     /*定义生成随机数函数*/
     printf("请输入最小值和最大值:\n");
     scanf("%d %d", &min, &max);
+
     long rand_in_range(int min, int max)
     {
         // 确保范围有效
@@ -26,6 +27,7 @@ int main(int argc, char const *argv[])
         // 生成 [min, max] 之间的随机数
         return min + (random() % (max - min + 1));
     }
+
     /* 1、创建共享内存并映射共享内存空间 */
     shmid = ShmInit(".", 65, 1024, (void **)&shmaddr);
     if (shmid == -1)
@@ -48,9 +50,11 @@ int main(int argc, char const *argv[])
         // 子进程循环写入100个整数
         int i = 0;
         int count = 100;
+        int temp = 0;
 
         for (int i = 0; i < count; i++)
         {
+            temp = rand_in_range;
         }
     }
 

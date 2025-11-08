@@ -16,16 +16,14 @@ union semun
 #include <sys/ipc.h>
 #include <sys/types.h>
 
-/* 共享内存初始化函数
- * 参数：
- *   pathname: 工程运行工作目录名称
- *   pro_id:   工程编号
- *   size:     共享内存空间字节数
- *   shmaddr:  返回共享内存空间映射成功的地址
- * 返回值：
- *   成功： 返回共享内存的ID
- *   失败： 返回-1
- */
+union semun
+{
+    int              val;    //用于setval传递单个信号量的初始值
+    struct semid_ds  *buf;   //用于IPC_STAT/IPC_SET :传递集合属性结构体
+    unsigned short   *array; //GETALL/SETLL :传递信号量值数组
+    struct seminfo   *_buf;  //IPC_INFO :(GNU扩展。查询系统限制)
+};
 
 extern int ShmInit(const char *pathname, int proj_id, size_t size, void **shmaddr);
 extern int ShmDestroy(const void **shmaddr, int shmid);
+extern int SemInit(const char *pathname, int proj_id, int nsems, int value);
