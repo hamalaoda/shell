@@ -3,7 +3,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <stdlib.h>
 
+#define MAX_FILES 100 // 最大歌曲数量
+#define MAX_PATH 256
+#define MAX_LYRICS 500
+#define PIPE_NAME "/tmp/mplayer_control_pipe"
 #endif
 
 // 播放模式枚举
@@ -21,21 +28,6 @@ typedef struct
     char text[256];
 } Lyric;
 
-// 全局状态变量（互斥访问）
-/*
- * char playlist[MAX_FILES][MAX_PATH]: 存储媒体文件的完整地址；以及最大支持的歌曲数量
- * int playlist_count :      记录当前播放列表中总的歌曲数量
- * int current_song :        代表当前歌曲的索引 (播放/暂停)
- * PlayMode play_mode :      表示当前的播放模式
- * volatile int is_playing : 布尔标志:表示播放状态 (正在/暂停)
- * pid_t mplayer_pid :       存储子进程Mplayer 的 ID
- * int pipe_fd :             代表父进程打开的、用于向 MPlayer 子进程发送命令的命名管道（FIFO）的文件描述符。
- * volatitle double current_time : 存储已播放时间
- * volatitle double total_time:  存储全部时间
- * Lyric lyrics[MAX_LYRICS]:    存储全部歌词信息
- * int lyric_count:             记录 lyrics 数组中实际加载的歌词行数。
- * pthread_mutex_t mutex :       互斥锁
- */
 typedef struct
 {
     char playlist[MAX_FILES][MAX_PATH];
@@ -56,3 +48,7 @@ AppState app;
 
 void show_playlist();
 void init_app_state();
+void add_to_playlist(const char *file);
+void show_playlist();
+void init_playlist(const char *file);
+void start_mplayer();
